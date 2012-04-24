@@ -7,8 +7,8 @@ The plug-in performs the following steps:
 1. Modify the project.clj to drop the "-SNAPSHOT" suffix
 2. Add the project.clj to the SCM system
 3. Commit the project.clj to the SCM system
-4. Tag the project with `projectName-version`
-5. If the project jar file does not exist, it builds it with `lein jar` and `lein pom`
+4. Tag the project with @projectName-version@
+5. If the project jar file does not exist, it builds it with @lein jar@ and @lein pom@
 6. Performs a Deploy (see the Deploy section below)
 7. Increments the project minor version number and re-adds the "-SNAPSHOT" suffix
 8. Add the project.clj to the SCM system
@@ -20,25 +20,25 @@ h1. Usage
 
 h1. Configuration
 
-The plug-in supports a `:lein-release` map in the project.clj
+The plug-in supports a @:lein-release@ map in the project.clj
 
-h3. `:scm`
+h3. @:scm@
 
     :lein-release {:scm :git}
 
-This can be used to specify the SCM (version control) system.  The release plug-in attempts to auto-detect the version control system by inspecting the current working directory (eg, for the `.git` directory).  If this does not work for your project you can specify the SCM system explicitly.
+This can be used to specify the SCM (version control) system.  The release plug-in attempts to auto-detect the version control system by inspecting the current working directory (eg, for the @.git@ directory).  If this does not work for your project you can specify the SCM system explicitly.
 
-h3. `:deploy-via`
+h3. @:deploy-via@
 
     :lein-release {:deploy-via :clojars}
 
 This can be used to explicitly specify the deployment strategy that will be used.  The currently supported values for this are:
 
-* `:clojars`
-* `:lein-deploy`
-* `:lein-install`
+* @:clojars@
+* @:lein-deploy@
+* @:lein-install@
 
-The release plugin attempts to detect whether to use `:lein-deploy` or `:lein-install` by inspecting the project.clj.  If a `:repositories` key is present in the project.clj `:lein-deploy` will be used.  Otherwise `:lein-install` will be used.  `:clojars` will only be used if it is explicitly specified in the project.clj.
+The release plugin attempts to detect whether to use @:lein-deploy@ or @:lein-install@ by inspecting the project.clj.  If a @:repositories@ key is present in the project.clj @:lein-deploy@ will be used.  Otherwise @:lein-install@ will be used.  @:clojars@ will only be used if it is explicitly specified in the project.clj.
 
 h2. Example Configuration
 
@@ -58,11 +58,11 @@ h1. Deploy
 
 The deployment strategy is determined by the following:
 
-* if `:deploy-vai` is specified in the configuration, its value is used
-* if the project.clj has a `:repositories` setting, then `:lein-deploy` is used
-* otherwise `:lein-install` is used
+* if @:deploy-vai@ is specified in the configuration, its value is used
+* if the project.clj has a @:repositories@ setting, then @:lein-deploy@ is used
+* otherwise @:lein-install@ is used
 
-Deployment to clojars is handled by shelling out and running `scp project-VERSION.jar pom.xml clojars@clojars.org:`.
+Deployment to clojars is handled by shelling out and running @scp project-VERSION.jar pom.xml clojars@clojars.org:@.
 
 Deployment via Leiningen is handled by shelling out (for a deploy or install respectively).
 
