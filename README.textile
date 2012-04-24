@@ -1,0 +1,81 @@
+h1. Leiningen Release Plug-in
+
+The release plug-in automatically manages your project's version and deploys the built artifact for you.
+
+The plug-in performs the following steps:
+
+1. Modify the project.clj to drop the "-SNAPSHOT" suffix
+2. Add the project.clj to the SCM system
+3. Commit the project.clj to the SCM system
+4. Tag the project with `projectName-version`
+5. If the project jar file does not exist, it builds it with `lein jar` and `lein pom`
+6. Performs a Deploy (see the Deploy section below)
+7. Increments the project minor version number and re-adds the "-SNAPSHOT" suffix
+8. Add the project.clj to the SCM system
+9. Commit the project.clj to the SCM system
+
+h1. Usage
+
+    lein release
+
+h1. Configuration
+
+The plug-in supports a `:lein-release` map in the project.clj
+
+h3. `:scm`
+
+    :lein-release {:scm :git}
+
+This can be used to specify the SCM (version control) system.  The release plug-in attempts to auto-detect the version control system by inspecting the current working directory (eg, for the `.git` directory).  If this does not work for your project you can specify the SCM system explicitly.
+
+h3. `:deploy-via`
+
+    :lein-release {:deploy-via :clojars}
+
+This can be used to explicitly specify the deployment strategy that will be used.  The currently supported values for this are:
+
+* `:clojars`
+* `:lein-deploy`
+* `:lein-install`
+
+The release plugin attempts to detect whether to use `:lein-deploy` or `:lein-install` by inspecting the project.clj.  If a `:repositories` key is present in the project.clj `:lein-deploy` will be used.  Otherwise `:lein-install` will be used.  `:clojars` will only be used if it is explicitly specified in the project.clj.
+
+h2. Example Configuration
+
+    (defproject org.clojars.relaynetwork/clj-avro "1.0.9-SNAPSHOT"
+      :description "Avro Wrapper for Clojure"
+      :dev-dependencies [[swank-clojure "1.4.2"]]
+      :plugins [[lein-release "1.0.0-SNAPSHOT"]]
+      :lein-release {:deploy-via :clojars}
+      :local-repo-classpath true
+      :dependencies [[org.clojure/clojure "1.2.0"]
+                     ;; [org.apache.avro/avro "1.5.4"]
+                     [org.apache.avro/avro "1.6.1"]
+                     [org.clojure/clojure-contrib "1.2.0"]
+                     [org.clojars.kyleburton/clj-etl-utils        "1.0.41"]])
+    
+h1. Deploy
+
+The deployment strategy is determined by the following:
+
+* if `:deploy-vai` is specified in the configuration, its value is used
+* if the project.clj has a `:repositories` setting, then `:lein-deploy` is used
+* otherwise `:lein-install` is used
+
+Deployment to clojars is handled by shelling out and running `scp project-VERSION.jar pom.xml clojars@clojars.org:`.
+
+Deployment via Leiningen is handled by shelling out (for a deploy or install respectively).
+
+h1. Supported SCM Systems
+
+Currently only git is supported.  Provisions have been made in the plug-in to support more SCM systems in the future.  Patches are welcome!
+
+h1. Limitations
+
+The plug-in uses simple heuristics (regexes!) to modify the version string in the project.clj.  If you have multiple lines (or comments) that look like a defproject it may not be able to succeed.  This approach was taken in order to not rewrite the entire project.clj file and thus loose things like formatting, indentation or comments.
+
+h1. License
+
+Copyright (C) Relay Network LLC
+
+Distributed under the Eclipse Public License, the same as Clojure.

@@ -120,6 +120,5 @@
         (println (format "updating version %s => %s for next dev cycle" release-version next-dev-version))
         (set-project-version! release-version next-dev-version)
         (scm! :add "project.clj")
-        (scm! :commit "-m" (format "lein-release plugin: bumped version from %s to %s for next developemnt cycle" release-version next-dev-version)))
-      (prn (format "VERSION: %s => %s => %s" current-version release-version next-dev-version)))))
+        (scm! :commit "-m" (format "lein-release plugin: bumped version from %s to %s for next developemnt cycle" release-version next-dev-version))))))
 
