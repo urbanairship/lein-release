@@ -26,7 +26,7 @@ The plug-in supports a @:lein-release@ map in the project.clj
 
 h3. @:scm@
 
-    :lein-release {:scm :git}
+    @:lein-release {:scm :git}@
 
 This can be used to specify the SCM (version control) system.  The release plug-in attempts to auto-detect the version control system by inspecting the current working directory (eg, for the @.git@ directory).  If this does not work for your project you can specify the SCM system explicitly.
 
