@@ -16,7 +16,7 @@ The plug-in performs the following steps:
 
 h1. Usage
 
-    lein plugin install lein-release 1.0.0
+    lein plugin install lein-release/lein-release 1.0.0
 
     lein release
 
@@ -75,6 +75,11 @@ Currently only git is supported.  Provisions have been made in the plug-in to su
 h1. Limitations
 
 The plug-in uses simple heuristics (regexes!) to modify the version string in the project.clj.  If you have multiple lines (or comments) that look like a defproject it may not be able to succeed.  This approach was taken in order to not rewrite the entire project.clj file and thus loose things like formatting, indentation or comments.
+
+h1. Authors
+
+Kyle Burton <kyle.burton@gmail.com>
+Paul Santa Clara
 
 h1. License
 
