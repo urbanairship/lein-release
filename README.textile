@@ -60,7 +60,7 @@ h1. Deploy
 
 The deployment strategy is determined by the following:
 
-* if @:deploy-vai@ is specified in the configuration, its value is used
+* if @:deploy-via@ is specified in the configuration, its value is used
 * if the project.clj has a @:repositories@ setting, then @:lein-deploy@ is used
 * otherwise @:lein-install@ is used
 
