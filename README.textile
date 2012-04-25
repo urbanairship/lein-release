@@ -64,7 +64,7 @@ The deployment strategy is determined by the following:
 * if the project.clj has a @:repositories@ setting, then @:lein-deploy@ is used
 * otherwise @:lein-install@ is used
 
-Deployment to clojars is handled by shelling out and running @scp project-VERSION.jar pom.xml clojars@clojars.org:@.
+Deployment to clojars is handled by shelling out and running @scp project-VERSION.jar pom.xml clojars@clojars.org:@
 
 Deployment via Leiningen is handled by shelling out (for a deploy or install respectively).
 
