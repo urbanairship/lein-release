@@ -16,6 +16,8 @@ The plug-in performs the following steps:
 
 h1. Usage
 
+    lein plugin install lein-release 1.0.0
+
     lein release
 
 h1. Configuration
