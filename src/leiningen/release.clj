@@ -24,7 +24,7 @@
      (.exists (java.io.File. ".git"))
      :git
      :no-scm-detected
-     (raise "Erorr: no scm detected! (I know only about git for now)."))))
+     (raise "Error: no scm detected! (I know only about git for now)."))))
 
 (defn sh! [& args]
   (let [res (apply sh/sh args)]
@@ -103,7 +103,8 @@
     (let [current-version  (get project :version)
           release-version  (.replaceAll current-version "-SNAPSHOT" "")
           next-dev-version (compute-next-development-version release-version)
-          jar-file-name    (format "%s-%s.jar" (:name project) release-version)]
+          target-dir       (:target-path project (:target-dir project (:jar-dir project "."))) ; target-path for lein2, target-dir or jar-dir for lein1
+          jar-file-name    (format "%s/%s-%s.jar" target-dir (:name project) release-version)]
       (when (is-snapshot? current-version)
         (println (format "setting project version %s => %s" current-version release-version))
         (set-project-version! current-version release-version)
