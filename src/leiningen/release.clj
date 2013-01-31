@@ -40,12 +40,85 @@
       (raise "No such SCM command: %s in %s" cmd scm))
     (apply sh! (concat scm-cmd args))))
 
+(def maven-version-regexes
+     {:major-only                               #"(\d+)(?:-(.+))?"
+      :major-and-minor                          #"(\d+)\.(\d+)(?:-(.+))?"
+      :major-minor-and-incremental              #"(\d+)\.(\d+)\.(\d+)(?:-(.+))?"})
+
+(defn parse-maven-version [vstr]
+  ;; <MajorVersion [> . <MinorVersion [> . <IncrementalVersion ] ] [> - <BuildNumber | Qualifier ]>
+  (cond
+    (re-matches (:major-only maven-version-regexes) vstr)
+    (let [[[_ major qualifier]] (re-seq (:major-only maven-version-regexes) vstr)]
+      {:format      :major-only
+       :major       major
+       :minor       nil
+       :incremental nil
+       :qualifier   qualifier})
+
+    (re-matches (:major-and-minor maven-version-regexes) vstr)
+    (let [[[_ major minor qualifier]] (re-seq (:major-and-minor maven-version-regexes) vstr)]
+      {:format      :major-and-minor
+       :major       major
+       :minor       minor
+       :incremental nil
+       :qualifier   qualifier})
+
+    (re-matches (:major-minor-and-incremental maven-version-regexes) vstr)
+    (let [[[_ major minor incremental qualifier]] (re-seq (:major-minor-and-incremental maven-version-regexes) vstr)]
+      {:format      :major-minor-and-incremental
+       :major       major
+       :minor       minor
+       :incremental incremental
+       :qualifier   qualifier})
+    :else
+    {:format :not-recognized
+     :major vstr}))
+
+(comment
+
+  (parse-maven-version "1")
+  {:format :major-only, :major "1", :minor nil, :incremental nil, :qualifier nil}
+  (parse-maven-version "1-SNAPSHOT")
+  {:format :major-only, :major "1", :minor nil, :incremental nil, :qualifier "SNAPSHOT"}
+  (parse-maven-version "1-b123")
+  {:format :major-only, :major "1", :minor nil, :incremental nil, :qualifier "b123"}
+
+  (parse-maven-version "1.2")
+  {:format :major-and-minor, :major "1", :minor "2", :incremental nil, :qualifier nil}
+  (parse-maven-version "1.2-SNAPSHOT")
+  {:format :major-and-minor, :major "1", :minor "2", :incremental nil, :qualifier "SNAPSHOT"}
+  (parse-maven-version "1.2-b123")
+  {:format :major-and-minor, :major "1", :minor "2", :incremental nil, :qualifier "b123"}
+
+  (parse-maven-version "1.2.3")
+  {:format :major-minor-and-incremental, :major "1", :minor "2", :incremental "3", :qualifier nil}
+  (parse-maven-version "1.2.3-SNAPSHOT")
+  {:format :major-minor-and-incremental, :major "1", :minor "2", :incremental "3", :qualifier "SNAPSHOT"}
+  (parse-maven-version "1.2.3-b123")
+  {:format :major-minor-and-incremental, :major "1", :minor "2", :incremental "3", :qualifier "b123"}
+
+  (parse-maven-version "1.2.3-rc1")
+  {:format :major-minor-and-incremental, :major "1", :minor "2", :incremental "3", :qualifier "rc1"}
+
+  )
+
+(defn ^:dynamic get-release-qualifier []
+  (System/getenv "RELEASE_QUALIFIER"))
+
+
+;; 1.0.116-SNAPSHOT
+;; 1.0.116-v2
+
+;; See: http://mojo.codehaus.org/versions-maven-plugin/version-rules.html
 (defn compute-next-development-version [current-version]
   (let [parts             (vec (.split current-version "\\."))
         version-parts     (vec (take (dec (count parts)) parts))
         minor-version     (last parts)
         new-minor-version (str (inc (Integer/parseInt minor-version)) "-SNAPSHOT")]
     (string/join "." (conj version-parts new-minor-version))))
+
+
 
 (defn replace-project-version [old-vstring new-vstring]
   (let [proj-file     (slurp "project.clj")
@@ -98,10 +171,21 @@
 (defn is-snapshot? [vstring]
   (.endsWith vstring "-SNAPSHOT"))
 
+(defn compute-release-version [current-version]
+  (str (.replaceAll current-version "-SNAPSHOT" "")
+       (get-release-qualifier)))
+
+(comment
+
+  (binding [get-release-qualifier (fn [] "-v2")]
+    (compute-release-version "1.0.116-SNAPSHOT"))
+
+)
+
 (defn release [project & args]
   (binding [config (or (:lein-release project) config)]
     (let [current-version  (get project :version)
-          release-version  (.replaceAll current-version "-SNAPSHOT" "")
+          release-version  (compute-release-version current-version)
           next-dev-version (compute-next-development-version release-version)
           target-dir       (:target-path project (:target-dir project (:jar-dir project "."))) ; target-path for lein2, target-dir or jar-dir for lein1
           jar-file-name    (format "%s/%s-%s.jar" target-dir (:name project) release-version)]

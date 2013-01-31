@@ -1,6 +1,6 @@
 h1. Leiningen Release Plug-in
 
-The release plug-in automatically manages your project's version and deploys the built artifact for you.
+The release plug-in automatically manages your project's version and deploys the built artifact for you.  Note that your project must follow the maven conventions for version strings in order for lein-release to operate: http://mojo.codehaus.org/versions-maven-plugin/version-rules.html
 
 The plug-in performs the following steps:
 
@@ -55,7 +55,7 @@ pre. (defproject org.clojars.relaynetwork/clj-avro "1.0.9-SNAPSHOT"
                      [org.apache.avro/avro "1.6.1"]
                      [org.clojure/clojure-contrib "1.2.0"]
                      [org.clojars.kyleburton/clj-etl-utils        "1.0.41"]])
-    
+
 h1. Deploy
 
 The deployment strategy is determined by the following:
@@ -69,6 +69,10 @@ Deployment to clojars is handled by shelling out and running:
 pre. scp project-VERSION.jar pom.xml clojars@clojars.org:
 
 Deployment via Leiningen is handled by shelling out (for a deploy or install respectively).
+
+h1. Environment Variable: RELEASE_QUALIFIER
+
+If set, this will be a suffix appended to the version of the released jar.
 
 h1. Supported SCM Systems
 
