@@ -16,7 +16,7 @@ The plug-in performs the following steps:
 
 h1. Usage
 
-pre.    lein plugin install lein-release/lein-release 1.0.3
+pre.    lein plugin install lein-release/lein-release 1.0.4
 
 pre.    lein release
 
