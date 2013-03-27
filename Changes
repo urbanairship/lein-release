@@ -1,2 +1,5 @@
+Wed Mar 27 13:37:10 EDT 2013
+  Merge issue #5  Make Clojars URL configurable
+  Merge issue #1  Add :shell deploy strategy
 Thu Jan 31 14:54:29 EST 2013
   Support a version string qualifier suffix specified by the environment variable RELEASE_QUALIFIER
