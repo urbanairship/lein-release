@@ -156,6 +156,9 @@
     :clojars
     (sh! "scp" "pom.xml" project-jar (:clojars-url config))
 
+    :shell
+    (apply sh! (:shell config))
+
     (raise "Error: unrecognized deploy strategy: %s" (detect-deployment-strategy))))
 
 (defn extract-project-version-from-file

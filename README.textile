@@ -39,8 +39,14 @@ This can be used to explicitly specify the deployment strategy that will be used
 * @:clojars@
 * @:lein-deploy@
 * @:lein-install@
+* @:shell@
 
-The release plugin attempts to detect whether to use @:lein-deploy@ or @:lein-install@ by inspecting the project.clj.  If a @:repositories@ key is present in the project.clj @:lein-deploy@ will be used.  Otherwise @:lein-install@ will be used.  @:clojars@ will only be used if it is explicitly specified in the project.clj.
+The release plugin attempts to detect whether to use @:lein-deploy@ or @:lein-install@ by inspecting the project.clj.  If a @:repositories@ key is present in the project.clj @:lein-deploy@ will be used.  Otherwise @:lein-install@ will be used.  @:clojars@ and @:shell@ will only be used if it is explicitly specified in the project.clj.
+
+If @:shell@ is specified, the value of the @:shell@ key should be an array of command line arguments, like:
+
+pre. :lein-release {:deploy-via :shell
+                    :shell ["s3cmd" "put" "target/*.jar" "s3://blueant.com/deploy"]}
 
 h3. @:clojars-url@
 
