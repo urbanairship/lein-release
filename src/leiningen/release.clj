@@ -8,7 +8,7 @@
 (defn raise [fmt & args]
   (throw (RuntimeException. (apply format fmt args))))
 
-(def ^:dynamic config {})
+(def ^:dynamic config {:clojars-url "clojars@clojars.org:"})
 
 (def *scm-systems*
      {:git {:add    ["git" "add"]
@@ -154,7 +154,7 @@
     (sh! "lein" "install")
 
     :clojars
-    (sh! "scp" "pom.xml" project-jar "clojars@clojars.org:")
+    (sh! "scp" "pom.xml" project-jar (:clojars-url config))
 
     (raise "Error: unrecognized deploy strategy: %s" (detect-deployment-strategy))))
 

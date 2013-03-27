@@ -42,6 +42,13 @@ This can be used to explicitly specify the deployment strategy that will be used
 
 The release plugin attempts to detect whether to use @:lein-deploy@ or @:lein-install@ by inspecting the project.clj.  If a @:repositories@ key is present in the project.clj @:lein-deploy@ will be used.  Otherwise @:lein-install@ will be used.  @:clojars@ will only be used if it is explicitly specified in the project.clj.
 
+h3. @:clojars-url@
+
+pre. :lein-release {:deploy-via :clojars 
+               :clojars-url "clojars@clojars.mycompany.com:"}
+
+This can be used to change the default clojars target url, particularly useful if you run your own internal instance of clojars.
+
 h2. Example Configuration
 
 pre. (defproject org.clojars.relaynetwork/clj-avro "1.0.9-SNAPSHOT"
