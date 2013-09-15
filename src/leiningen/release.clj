@@ -8,9 +8,11 @@
 (defn raise [fmt & args]
   (throw (RuntimeException. (apply format fmt args))))
 
-(def ^:dynamic config {:clojars-url "clojars@clojars.org:"})
+(def default-clojars-url "clojars@clojars.org:")
 
-(def *scm-systems*
+(def ^:dynamic config {:clojars-url default-clojars-url})
+
+(def scm-systems
      {:git {:add    ["git" "add"]
             :tag    ["git" "tag"]
             :commit ["git" "commit"]
@@ -35,7 +37,7 @@
 
 (defn scm! [cmd & args]
   (let [scm   (detect-scm)
-        scm-cmd (get-in *scm-systems* [scm cmd])]
+        scm-cmd (get-in scm-systems [scm cmd])]
     (if-not scm-cmd
       (raise "No such SCM command: %s in %s" cmd scm))
     (apply sh! (concat scm-cmd args))))
@@ -144,6 +146,11 @@
     :no-deploy-strategy
     :lein-install))
 
+
+(defn clojars-url []
+  (or (:clojars-url config)
+      default-clojars-url))
+
 (defn perform-deploy! [project project-jar]
   (case (detect-deployment-strategy project)
 
@@ -154,7 +161,7 @@
     (sh! "lein" "install")
 
     :clojars
-    (sh! "scp" "pom.xml" project-jar (:clojars-url config))
+    (sh! "scp" "pom.xml" project-jar (clojars-url))
 
     :shell
     (apply sh! (:shell config))
