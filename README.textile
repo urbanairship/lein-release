@@ -1,6 +1,6 @@
 h1. Leiningen Release Plug-in
 
-The release plug-in automatically manages your project's version and deploys the built artifact for you.  Note that your project must follow the maven conventions for version strings in order for lein-release to operate: http://mojo.codehaus.org/versions-maven-plugin/version-rules.html
+The release plug-in automatically manages your project's version string and deploys the built artifact for you.  Note that your project must follow the maven conventions for version strings in order for lein-release to operate: http://mojo.codehaus.org/versions-maven-plugin/version-rules.html
 
 The plug-in performs the following steps:
 
@@ -16,7 +16,19 @@ The plug-in performs the following steps:
 
 h1. Usage
 
+See "Leiningen: Installing Plugins":https://github.com/technomancy/leiningen/wiki/Upgrading#plugins
+
+Add @[lein-release "1.0.5"]@ to the @:user -> :plugins@ section of your @$HOME/.lein/profiles.clj@:
+
+<pre>
+{:user {:plugins [[lein-release "1.0.5"]]}}
+</pre>
+
+For Leiningen 1:
+
 pre.    lein plugin install lein-release/lein-release 1.0.5
+
+To perform a release:
 
 pre.    lein release
 
@@ -43,7 +55,7 @@ This can be used to explicitly specify the deployment strategy that will be used
 
 The release plugin attempts to detect whether to use @:lein-deploy@ or @:lein-install@ by inspecting the project.clj.  If a @:repositories@ key is present in the project.clj @:lein-deploy@ will be used.  Otherwise @:lein-install@ will be used.  @:clojars@ and @:shell@ will only be used if it is explicitly specified in the project.clj.
 
-If @:shell@ is specified, the value of the @:shell@ key should be an array of command line arguments, like:
+If @:shell@ is specified, the value of the @:shell@ key should be an array of command line arguments:
 
 pre. :lein-release {:deploy-via :shell
                     :shell ["s3cmd" "put" "target/*.jar" "s3://blueant.com/deploy"]}
@@ -59,15 +71,12 @@ h2. Example Configuration
 
 pre. (defproject org.clojars.relaynetwork/clj-avro "1.0.9-SNAPSHOT"
       :description "Avro Wrapper for Clojure"
-      :dev-dependencies [[swank-clojure "1.4.2"]]
-      :plugins [[lein-release "1.0.0-SNAPSHOT"]]
       :lein-release {:deploy-via :clojars}
       :local-repo-classpath true
-      :dependencies [[org.clojure/clojure "1.2.0"]
-                     ;; [org.apache.avro/avro "1.5.4"]
-                     [org.apache.avro/avro "1.6.1"]
-                     [org.clojure/clojure-contrib "1.2.0"]
-                     [org.clojars.kyleburton/clj-etl-utils        "1.0.41"]])
+      :dependencies [[org.clojure/clojure                   "1.2.0"]
+                     [org.apache.avro/avro                  "1.6.1"]
+                     [org.clojure/clojure-contrib           "1.2.0"]
+                     [org.clojars.kyleburton/clj-etl-utils  "1.0.41"]])
 
 h1. Deploy
 
@@ -85,11 +94,23 @@ Deployment via Leiningen is handled by shelling out (for a deploy or install res
 
 h1. Environment Variable: RELEASE_QUALIFIER
 
-If set, this will be a suffix appended to the version of the released jar.
+If set, this will be a suffix appended to the version of the released jar.  We have used this in the past to create custom releases of projects we don't control until patches are accepted or bugs are fixed (a fork), and in cases where we need to create either release candidates or incremental patches.
+
+In the fork case, we would often add a @-rn@ suffix:
+
+pre. RELEASE_QUALIFIER=-rn lein release
+
+In the latter case (release candidates or incremental patch):
+
+pre. RELEASE_QUALIFIER=-rc1 lein release
+
+or:
+
+pre. RELEASE_QUALIFIER=.1 lein release
 
 h1. Supported SCM Systems
 
-Currently only git is supported.  Provisions have been made in the plug-in to support more SCM systems in the future.  Patches are welcome!
+Currently only git support is implemented.  Provisions have been made in the plug-in to support more SCM systems in the future.  Patches are welcome!
 
 h1. Limitations
 
