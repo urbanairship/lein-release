@@ -8,10 +8,6 @@
 (defn raise [fmt & args]
   (throw (RuntimeException. (apply format fmt args))))
 
-(def default-clojars-url "clojars@clojars.org:")
-
-(def ^:dynamic config {:clojars-url default-clojars-url})
-
 (def scm-systems
      {:git {:add    ["git" "add"]
             :tag    ["git" "tag"]
@@ -147,10 +143,6 @@
     :lein-install))
 
 
-(defn clojars-url []
-  (or (:clojars-url config)
-      default-clojars-url))
-
 (defn perform-deploy! [project project-jar]
   (case (detect-deployment-strategy project)
 
@@ -161,7 +153,7 @@
     (sh! "lein" "install")
 
     :clojars
-    (sh! "scp" "pom.xml" project-jar (clojars-url))
+    (sh! "lein" "deploy" "clojars")
 
     :shell
     (apply sh! (:shell config))
@@ -216,4 +208,3 @@
         (set-project-version! release-version next-dev-version)
         (scm! :add "project.clj")
         (scm! :commit "-m" (format "lein-release plugin: bumped version from %s to %s for next development cycle" release-version next-dev-version))))))
-

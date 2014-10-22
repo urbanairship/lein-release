@@ -60,13 +60,6 @@ If @:shell@ is specified, the value of the @:shell@ key should be an array of co
 pre. :lein-release {:deploy-via :shell
                     :shell ["s3cmd" "put" "target/*.jar" "s3://blueant.com/deploy"]}
 
-h3. @:clojars-url@
-
-pre. :lein-release {:deploy-via :clojars 
-               :clojars-url "clojars@clojars.mycompany.com:"}
-
-This can be used to change the default clojars target url, particularly useful if you run your own internal instance of clojars.
-
 h2. Example Configuration
 
 pre. (defproject org.clojars.relaynetwork/clj-avro "1.0.9-SNAPSHOT"
@@ -88,7 +81,7 @@ The deployment strategy is determined by the following:
 
 Deployment to clojars is handled by shelling out and running:
 
-pre. scp project-VERSION.jar pom.xml clojars@clojars.org:
+pre. lein deploy clojars
 
 Deployment via Leiningen is handled by shelling out (for a deploy or install respectively).
 
@@ -115,6 +108,12 @@ Currently only git support is implemented.  Provisions have been made in the plu
 h1. Limitations
 
 The plug-in uses simple heuristics (regexes!) to modify the version string in the project.clj.  If you have multiple lines (or comments) that look like a defproject it may not be able to succeed.  This approach was taken in order to not rewrite the entire project.clj file and thus loose things like formatting, indentation or comments.
+
+h1. Changes
+
+h6. 1.0.6 2014-10-22T17:50:44Z
+
+pre. Change @clojars@ deploy-via to use @lein deploy clojars@ instead of scp.
 
 h1. Authors
 
