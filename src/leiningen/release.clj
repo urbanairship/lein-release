@@ -42,11 +42,13 @@
     (apply sh! (concat scm-cmd args))))
 
 (def maven-version-regexes
-     {:major-only                               #"(\d+)(?:-(.+))?"
-      :major-and-minor                          #"(\d+)\.(\d+)(?:-(.+))?"
-      :major-minor-and-incremental              #"(\d+)\.(\d+)\.(\d+)(?:-(.+))?"})
+  {:major-only                               #"(\d+)(?:-(.+))?"
+   :major-and-minor                          #"(\d+)\.(\d+)(?:-(.+))?"
+   :major-minor-and-incremental              #"(\d+)\.(\d+)\.(\d+)(?:-(.+))?"})
 
-(defn parse-maven-version [vstr]
+(defn parse-maven-version
+  ""
+[vstr]
   ;; <MajorVersion [> . <MinorVersion [> . <IncrementalVersion ] ] [> - <BuildNumber | Qualifier ]>
   (cond
     (re-matches (:major-only maven-version-regexes) vstr)
@@ -165,13 +167,13 @@
 
 (defn extract-project-version-from-file
   ([]
-     (extract-project-version-from-file "project.clj"))
+   (extract-project-version-from-file "project.clj"))
   ([proj-file]
-     (let [s (slurp proj-file)
-           m (.matcher (Pattern/compile "\\(defproject .+? \"([^\"]+?)\"") s)]
-       (if-not (.find m)
-         (raise "Error: unable to find project version in file: %s" proj-file))
-       (.group m 1))))
+   (let [s (slurp proj-file)
+         m (.matcher (Pattern/compile "\\(defproject .+? \"([^\"]+?)\"") s)]
+     (if-not (.find m)
+       (raise "Error: unable to find project version in file: %s" proj-file))
+     (.group m 1))))
 
 (defn is-snapshot? [vstring]
   (.endsWith vstring "-SNAPSHOT"))
