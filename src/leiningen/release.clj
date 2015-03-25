@@ -187,7 +187,7 @@
   (binding [get-release-qualifier (fn [] "-v2")]
     (compute-release-version "1.0.116-SNAPSHOT"))
 
-)
+  )
 
 (defn release [project & args]
   (binding [config (or (:lein-release project) config)]
