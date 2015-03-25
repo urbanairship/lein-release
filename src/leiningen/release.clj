@@ -22,14 +22,19 @@
      :no-scm-detected
      (raise "Error: no scm detected! (I know only about git for now)."))))
 
-(defn sh! [& args]
+(defn sh!
+  "Utility function; shells out with all provided args, captures and prints the
+  result. Prints out and error appropriately."
+  [& args]
   (let [res (apply sh/sh args)]
     (.println System/out (:out res))
     (.println System/err (:err res))
     (when-not (zero? (:exit res))
       (raise "Error: command failed %s => %s" args res))))
 
-(defn scm! [cmd & args]
+(defn scm!
+  "Calls in to the configured SCM system."
+  [cmd & args]
   (let [scm   (detect-scm)
         scm-cmd (get-in scm-systems [scm cmd])]
     (if-not scm-cmd
