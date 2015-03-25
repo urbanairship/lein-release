@@ -1,19 +1,17 @@
 (ns leiningen.release
-  (:require
-   [clojure.java.shell :as sh]
-   [clojure.string     :as string])
-  (:import
-   [java.util.regex Pattern]))
+  (:require [clojure.java.shell :as sh]
+            [clojure.string     :as string])
+  (:import [java.util.regex Pattern]))
 
 (defn raise [fmt & args]
   (throw (RuntimeException. (apply format fmt args))))
 
 (def scm-systems
-     {:git {:add    ["git" "add"]
-            :tag    ["git" "tag"]
-            :commit ["git" "commit"]
-            :push   ["git" "push" "origin" "master"]
-            :status ["git" "status"]}})
+  {:git {:add    ["git" "add"]
+         :tag    ["git" "tag"]
+         :commit ["git" "commit"]
+         :push   ["git" "push" "origin" "master"]
+         :status ["git" "status"]}})
 
 (defn detect-scm []
   (or
