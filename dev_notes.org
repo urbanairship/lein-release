@@ -1,0 +1,8 @@
+* Major TODOs
+** TODO Switch to using correct lein logging
+** TODO Dispatch to other lein commands instead of the shell:
+- Commands [0/3]
+  - [ ] deploy
+  - [ ] install
+  - [ ] deploy clojars
+** TODO Related: figure out command chaining in lein
